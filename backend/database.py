@@ -8,14 +8,20 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
-    # We must explicitly fail if PostgreSQL URL is missing rather than falling back to SQLite
-    raise ValueError("DATABASE_URL environment variable is not set. A PostgreSQL database is required.")
+    if os.getenv("TESTING") == "True":
+        DATABASE_URL = "sqlite:///:memory:"
+    else:
+        # We must explicitly fail if PostgreSQL URL is missing rather than falling back to SQLite
+        raise ValueError("DATABASE_URL environment variable is not set. A PostgreSQL database is required.")
 
 # SQLAlchemy expects 'postgresql://' instead of 'postgres://' (which some hosts provide)
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-engine = create_engine(DATABASE_URL)
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+else:
+    engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

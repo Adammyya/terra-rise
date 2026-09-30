@@ -98,3 +98,35 @@ async def enhance_image(
         }
     except Exception as e:
         return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
+from backend.services.gemini_service import call_gemini
+
+@router.post("/sr/analyze")
+async def analyze_sr_image(
+    image: UploadFile = File(...),
+    query: str = Form(...)
+):
+    try:
+        contents = await image.read()
+        
+        system_prompt = """
+You are TerraRise, an expert Earth-observation AI. 
+The user is providing an image (either the original medium-resolution observation or a super-resolved reconstruction).
+Answer their query as a professional geospatial analyst. Do not invent details.
+Format the output as a valid JSON object with the exact keys:
+{
+  "task": "downstream_analysis",
+  "answer": "Your detailed response here."
+}
+        """
+        
+        result = call_gemini(
+            system_prompt=system_prompt,
+            user_prompt=query,
+            image_bytes=contents,
+            mime_type=image.content_type or "image/jpeg"
+        )
+        
+        return result
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
