@@ -10,3 +10,13 @@ bcrypt
 python-jose[cryptography]
 email-validator
 pillow
+opencv-contrib-python
+
+numpy
+
+rasterio
+
+scikit-image
+
+tifffile
+
