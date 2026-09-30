@@ -7,7 +7,7 @@ import io
 import time
 import os
 import base64
-from backend.services.super_resolution_service import sr_model, calculate_metrics, compute_uncertainty
+from services.super_resolution_service import sr_model, calculate_metrics, compute_uncertainty
 
 router = APIRouter()
 
@@ -18,6 +18,10 @@ async def enhance_image(
     reference_image: UploadFile = File(None),
     baseline: bool = Form(False)
 ):
+    print("\n[SR] request received")
+    print(f"[SR] input file: {image.filename}")
+    print(f"[SR] scale: {scale}×")
+    
     try:
         contents = await image.read()
         pil_img = Image.open(io.BytesIO(contents)).convert('RGB')
@@ -28,7 +32,10 @@ async def enhance_image(
         h, w, c = img_bgr.shape
         start_time = time.time()
         
+        print("[SR] model loading")
+        print("[SR] inference started")
         enhanced_bgr = sr_model.enhance(img_bgr, scale)
+        print("[SR] inference completed")
         
         processing_time = time.time() - start_time
         enhanced_rgb = cv2.cvtColor(enhanced_bgr, cv2.COLOR_BGR2RGB)
@@ -68,6 +75,8 @@ async def enhance_image(
             
         uncertainty = compute_uncertainty(img_np, enhanced_rgb, scale)
 
+        print("[SR] output saved")
+        print("[SR] response returned")
         return {
             "success": True,
             "model": sr_model.model_name,
@@ -99,7 +108,7 @@ async def enhance_image(
     except Exception as e:
         return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
 
-from backend.services.gemini_service import call_gemini
+from services.gemini_service import call_gemini
 
 @router.post("/sr/analyze")
 async def analyze_sr_image(

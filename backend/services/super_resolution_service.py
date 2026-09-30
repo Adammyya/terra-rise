@@ -19,10 +19,19 @@ class SuperResolutionModel:
             sr = dnn_superres.DnnSuperResImpl_create()
             model_path = os.path.join(os.path.dirname(__file__), f"../models_weights/{self.model_name}_x{scale}.pb")
             if not os.path.exists(model_path):
-                raise FileNotFoundError(f"Model file not found: {model_path}")
+                raise FileNotFoundError(f"SR model weights are unavailable. Expected: {model_path}")
             sr.readModel(model_path)
             sr.setModel(self.model_name.lower(), scale)
             self.sr_models[scale] = sr
+            
+            print("========================================")
+            print(f"MODEL: {self.model_name}")
+            print(f"DEVICE: CPU (OpenCV DNN)")
+            print(f"WEIGHTS: {model_path}")
+            print(f"SCALE: {scale}×")
+            print("STATUS: READY")
+            print("========================================")
+            
         return self.sr_models[scale]
 
     def enhance(self, image_np, scale):

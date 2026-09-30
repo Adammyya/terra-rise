@@ -30,6 +30,11 @@ const SuperResolutionPanel = () => {
   };
 
   const handleEnhance = async () => {
+    console.log("TerraRise SR run started");
+    console.log("File:", image?.name);
+    console.log("Scale:", scale);
+    console.log("Reference:", !!reference);
+
     if (!image) return;
     setLoading(true);
     const formData = new FormData();
@@ -47,9 +52,16 @@ const SuperResolutionPanel = () => {
         body: formData,
       });
       const data = await response.json();
+      console.log("Response:", data);
+      
+      if (!data.success) {
+         throw new Error(data.error || 'Server returned failure');
+      }
+      
       setResult(data);
     } catch (err) {
-      console.error(err);
+      console.error("[SR ERROR]:", err);
+      alert("Failed to process image: " + err.message);
     } finally {
       setLoading(false);
     }

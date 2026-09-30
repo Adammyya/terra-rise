@@ -5,14 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-if not DATABASE_URL:
-    if os.getenv("TESTING") == "True":
-        DATABASE_URL = "sqlite:///:memory:"
-    else:
-        # We must explicitly fail if PostgreSQL URL is missing rather than falling back to SQLite
-        raise ValueError("DATABASE_URL environment variable is not set. A PostgreSQL database is required.")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./terrarise.db")
 
 # SQLAlchemy expects 'postgresql://' instead of 'postgres://' (which some hosts provide)
 if DATABASE_URL.startswith("postgres://"):

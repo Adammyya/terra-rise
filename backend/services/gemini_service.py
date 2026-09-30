@@ -17,7 +17,11 @@ load_dotenv()
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 GEMINI_FALLBACK_MODEL = os.getenv("GEMINI_FALLBACK_MODEL")
 
-client = genai.Client()
+client = None
+try:
+    client = genai.Client()
+except Exception:
+    pass
 
 def preprocess_image(image_bytes: bytes, mime_type: str) -> tuple[bytes, str, str, dict]:
     """
@@ -78,6 +82,9 @@ def call_gemini(
     image2_bytes: bytes = None,
     mime_type2: str = None,
 ) -> dict:
+    if client is None:
+        raise ValueError("Gemini API client could not be initialized. Check your GEMINI_API_KEY.")
+
     lang_instruction = (
         "IMPORTANT: Mirror the exact language, script, and stylistic tone of the user's query. "
         "If the query is in English, answer in English. "
