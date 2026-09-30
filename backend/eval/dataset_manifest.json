@@ -1,0 +1,225 @@
+[
+  {
+    "task": "satellite_vqa",
+    "query": "Is there any visible flooding in this area?",
+    "expected_answer_keywords": [
+      "flood",
+      "water",
+      "inundation",
+      "submerged"
+    ],
+    "reference_result": {
+      "answer": "Yes, extensive flooding is visible along the riverbanks, with dark blue standing water submerging agricultural fields.",
+      "confidence": 0.92,
+      "evidence": {
+        "type": "VISUAL",
+        "spatial_evidence_available": false
+      }
+    }
+  },
+  {
+    "task": "satellite_vqa",
+    "query": "What type of land cover dominates the scene?",
+    "expected_answer_keywords": [
+      "forest",
+      "trees",
+      "vegetation",
+      "woodland"
+    ],
+    "reference_result": {
+      "answer": "The scene is dominated by dense forest vegetation, characterized by continuous dark green canopy cover.",
+      "confidence": 0.95,
+      "evidence": {
+        "type": "VISUAL",
+        "spatial_evidence_available": false
+      }
+    }
+  },
+  {
+    "task": "temporal_comparison",
+    "query": "How has the urban area changed between T1 and T2?",
+    "expected_answer_keywords": [
+      "expansion",
+      "growth",
+      "new construction",
+      "buildings",
+      "urban"
+    ],
+    "reference_result": {
+      "answer": "Significant urban expansion is evident between T1 and T2. New residential and commercial construction has replaced the agricultural land in the southeast.",
+      "confidence": 0.88,
+      "evidence": {
+        "type": "TEMPORAL",
+        "visual_difference_available": true,
+        "difference_ratio": 0.14,
+        "spatial_evidence_available": false
+      }
+    }
+  },
+  {
+    "task": "temporal_comparison",
+    "query": "Did the lake shrink or grow between these two dates?",
+    "expected_answer_keywords": [
+      "shrink",
+      "recede",
+      "decrease",
+      "smaller"
+    ],
+    "reference_result": {
+      "answer": "The lake has shrunk significantly between the two observations. The water line has receded, exposing bare soil along the northern and eastern edges.",
+      "confidence": 0.91,
+      "evidence": {
+        "type": "TEMPORAL",
+        "visual_difference_available": true,
+        "difference_ratio": 0.08,
+        "spatial_evidence_available": false
+      }
+    }
+  },
+  {
+    "task": "spatial_grounding",
+    "query": "Where is the main bridge located?",
+    "expected_answer_keywords": [
+      "center",
+      "bridge",
+      "crossing",
+      "river"
+    ],
+    "reference_result": {
+      "answer": "The main bridge is located in the center-left of the image, crossing the primary river channel.",
+      "confidence": 0.85,
+      "evidence": {
+        "type": "VISUAL",
+        "spatial_evidence_available": true,
+        "regions": [
+          {
+            "label": "main bridge",
+            "x": 0.45,
+            "y": 0.55,
+            "width": 0.15,
+            "height": 0.05,
+            "confidence": 0.85,
+            "basis": "approximate_visual_region"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "task": "spatial_grounding",
+    "query": "Locate the recent deforestation.",
+    "expected_answer_keywords": [
+      "north",
+      "cleared",
+      "logging",
+      "deforestation"
+    ],
+    "reference_result": {
+      "answer": "Recent deforestation is visible in the upper right quadrant, appearing as lighter, irregularly cleared geometric patches.",
+      "confidence": 0.82,
+      "evidence": {
+        "type": "VISUAL",
+        "spatial_evidence_available": true,
+        "regions": [
+          {
+            "label": "deforestation patch",
+            "x": 0.7,
+            "y": 0.15,
+            "width": 0.2,
+            "height": 0.25,
+            "confidence": 0.8,
+            "basis": "approximate_visual_region"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "task": "optical_sar_fusion",
+    "query": "Verify the presence of ships using SAR.",
+    "expected_answer_keywords": [
+      "ship",
+      "vessel",
+      "bright",
+      "backscatter",
+      "radar"
+    ],
+    "reference_result": {
+      "answer": "The SAR data reveals several high-intensity point targets (bright backscatter) in the harbor, confirming the presence of metallic vessels that were partially obscured by clouds in the optical image.",
+      "confidence": 0.96,
+      "evidence": {
+        "type": "COMPOSITE",
+        "spatial_evidence_available": false
+      }
+    }
+  },
+  {
+    "task": "optical_sar_fusion",
+    "query": "Are the flooded areas visible in both optical and radar?",
+    "expected_answer_keywords": [
+      "dark",
+      "low backscatter",
+      "flood",
+      "water",
+      "both"
+    ],
+    "reference_result": {
+      "answer": "Yes, the flooding is visible in both. The optical shows muddy brown standing water, and the SAR shows corresponding contiguous regions of very low backscatter (dark pixels) typical of smooth water surfaces.",
+      "confidence": 0.94,
+      "evidence": {
+        "type": "COMPOSITE",
+        "spatial_evidence_available": false
+      }
+    }
+  },
+  {
+    "task": "satellite_vqa",
+    "query": "Are there any clouds obscuring the target?",
+    "expected_answer_keywords": [
+      "clear",
+      "no clouds",
+      "unobscured",
+      "visible"
+    ],
+    "reference_result": {
+      "answer": "The image is completely clear. There are no clouds obscuring the ground targets.",
+      "confidence": 0.98,
+      "evidence": {
+        "type": "VISUAL",
+        "spatial_evidence_available": false
+      }
+    }
+  },
+  {
+    "task": "composite_analysis",
+    "query": "Find the new buildings built since T1 and use SAR to verify them.",
+    "expected_answer_keywords": [
+      "new",
+      "building",
+      "construct",
+      "bright",
+      "backscatter"
+    ],
+    "reference_result": {
+      "answer": "Temporal comparison shows new geometric structures in the southern sector. SAR confirms these are rigid, likely metallic or concrete structures due to strong double-bounce backscatter returns.",
+      "confidence": 0.89,
+      "evidence": {
+        "type": "COMPOSITE",
+        "spatial_evidence_available": true,
+        "visual_difference_available": true,
+        "difference_ratio": 0.04,
+        "regions": [
+          {
+            "label": "new construction",
+            "x": 0.5,
+            "y": 0.8,
+            "width": 0.1,
+            "height": 0.1,
+            "confidence": 0.88,
+            "basis": "approximate_visual_region"
+          }
+        ]
+      }
+    }
+  }
+]

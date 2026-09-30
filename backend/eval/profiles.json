@@ -1,0 +1,25 @@
+{
+    "profiles": {
+        "satellite_vqa": {
+            "description": "Single-image visual question answering for optical remote sensing.",
+            "metrics": ["semantic_match", "confidence_score", "evidence_availability"]
+        },
+        "temporal_comparison": {
+            "description": "Multi-temporal change detection and comparison between T1 and T2.",
+            "metrics": ["semantic_match", "visual_difference_flag", "confidence_score"]
+        },
+        "optical_sar_fusion": {
+            "description": "Multimodal interpretation correlating optical imagery with SAR proxy data.",
+            "metrics": ["semantic_match", "cross_sensor_evidence", "confidence_score"]
+        },
+        "spatial_grounding": {
+            "description": "Image-relative approximate bounding box localization.",
+            "metrics": ["region_validity", "confidence_score"]
+        }
+    },
+    "limitations": [
+        "Prompt engineering acts as zero-shot adaptation; it is NOT model fine-tuning.",
+        "Geospatial reasoning is approximate and image-relative, not metric/GIS accurate.",
+        "Visual SAR correlation is performed on amplitude proxies, not raw polarimetric phase data."
+    ]
+}

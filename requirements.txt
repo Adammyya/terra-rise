@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+python-multipart
+google-genai
+python-dotenv
+pydantic
+sqlalchemy
+psycopg[binary]
+bcrypt
+python-jose[cryptography]
+email-validator
+pillow
