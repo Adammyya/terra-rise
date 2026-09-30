@@ -16,6 +16,7 @@ from routers.auth import (
     get_current_user,
     get_current_user_from_token_string,
 )
+from routers.sr import router as sr_router
 
 
 load_dotenv()
@@ -23,7 +24,7 @@ load_dotenv()
 # Auto-create tables on startup (idempotent)
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="SatQuery AI Backend", version="1.0.0")
+app = FastAPI(title="TerraRise Backend", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,14 +35,15 @@ app.add_middleware(
 )
 
 app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
+app.include_router(sr_router, prefix="/api", tags=["sr"])
 
 
 @app.get("/")
 def home():
     return {
-        "service": "SatQuery AI Remote-Sensing Intelligence Workstation",
+        "service": "TerraRise AI Super-Resolution Workstation",
         "status": "online",
-        "supported_modalities": ["optical", "optical+sar_visual_proxy"],
+        "supported_modalities": ["optical", "super_resolution"],
     }
 
 
