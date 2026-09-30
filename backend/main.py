@@ -21,8 +21,9 @@ from routers.sr import router as sr_router
 
 load_dotenv()
 
-# Auto-create tables on startup (idempotent)
-models.Base.metadata.create_all(bind=engine)
+# Auto-create tables on startup (idempotent) if DB is configured
+if engine is not None:
+    models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="TerraRise Backend", version="1.0.0")
 

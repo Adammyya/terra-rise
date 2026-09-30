@@ -42,6 +42,8 @@ def get_current_user(
     db: Session = Depends(get_db),
 ):
     """Validate Bearer token and return the matching User row."""
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database disabled")
     if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -82,6 +84,8 @@ def get_current_user_from_token_string(token: str, db: Session) -> Optional[mode
 
 @router.post("/register")
 def register(user: UserCreate, db: Session = Depends(get_db)):
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database disabled")
     db_user = db.query(models.User).filter(models.User.email == user.email).first()
     if db_user:
         raise HTTPException(
@@ -113,6 +117,8 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def login(credentials: LoginRequest, db: Session = Depends(get_db)):
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database disabled")
     user = db.query(models.User).filter(models.User.email == credentials.email).first()
     if not user or not verify_password(credentials.password, user.password_hash):
         raise HTTPException(
@@ -144,6 +150,8 @@ def get_history(
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    if db is None:
+        raise HTTPException(status_code=503, detail="Database disabled")
     analyses = (
         db.query(models.Analysis)
         .filter(models.Analysis.user_id == current_user.id)
