@@ -1,8 +1,16 @@
-import time
+﻿import sys, time
+from pathlib import Path
 from typing import Optional
+
+# Force UTF-8 output encoding on Windows (avoids cp1252 UnicodeEncodeError in print())
+if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding and sys.stderr.encoding.lower() != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 
@@ -16,13 +24,14 @@ from routers.auth import (
     get_current_user,
     get_current_user_from_token_string,
 )
-from routers.sr import router as sr_router
+from routers.sr import router as sr_router, OUTPUT_DIR
 
 
 load_dotenv()
 
-# Auto-create tables on startup (idempotent)
-models.Base.metadata.create_all(bind=engine)
+# Auto-create tables on startup (idempotent) if DB is configured
+if engine is not None:
+    models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="TerraRise Backend", version="1.0.0")
 
@@ -33,6 +42,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# -- Serve SR output images as static files ------------------------------------
+# Output PNGs are saved to backend/sr_outputs/ and served at /sr/output/<file>.
+# This replaces the previous base64-in-JSON approach which caused large memory
+# spikes and browser slowdowns on high-resolution outputs.
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/sr/output", StaticFiles(directory=str(OUTPUT_DIR)), name="sr_output")
 
 app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
 app.include_router(sr_router, prefix="/api", tags=["sr"])
